@@ -1,61 +1,74 @@
-# Path-Planner
-**Multi-Agent RRT Path Planning Simulator**
+# 🚀 Interactive Multi-Agent 2D RRT Path Planner
 
-An interactive 2D simulation of multi-agent path planning using the Rapidly-exploring Random Tree (RRT) algorithm. The project demonstrates real-time path generation, dynamic obstacle handling, and smooth trajectory execution with animation.
+An interactive 2D simulation application built in Python using Pygame and NumPy. The system simulates multiple autonomous agents navigating a 2D environment by constructing and updating **Rapidly-exploring Random Trees (RRT)** in real-time, smoothing trajectories with splines, and dynamically avoiding obstacles.
 
-**Features**
-Multi-agent path planning (up to 3 agents)
-RRT-based path generation
-Real-time obstacle addition
-Adaptive replanning when paths are blocked
-Smooth path generation using spline interpolation
-Animated agents with basic collision avoidance
-Interactive UI built with Pygame
+---
 
-**Tech Stack**
-Python
-Pygame
-NumPy
+## 🌟 Key Features
 
-**How to Run**
-Install dependencies:
+*   **Multi-Agent Navigation:** Supports up to 3 agents running concurrently, each with independent start/goal coordinates, search trees, and computed paths.
+*   **Dynamic Obstacles:** Click and drag to draw custom polygon obstacles directly onto the canvas in real time.
+*   **Adaptive Local Repair:** When a new obstacle intersects a planned path, the affected agent dynamically triggers a local RRT repair between the boundary waypoints of the collision zone. If the local repair fails, the agent falls back to a global replan.
+*   **Path Smoothing:** Trajectories are post-processed using **Catmull-Rom spline interpolation**, converting jagged RRT paths into continuous, $C^1$-continuous smooth curves.
+*   **Inter-Agent Avoidance:** Integrates real-time soft collision avoidance by applying a local repulsive velocity field when agents come within proximity of each other.
+*   **Real-Time Animation:** Shows animated robots moving along their paths with dynamically updated heading indicators.
+
+---
+
+## 📂 Project Structure
+
+```bash
+├── Path-Planner_Code.py  # Interactive Pygame multi-agent path planner
+├── README.md             # Project documentation (this file)
+```
+
+---
+
+## 🛠️ Installation & Setup
+
+Ensure you have Python 3.8+ installed. Install the required dependencies using `pip`:
+
+```bash
 pip install pygame numpy
+```
 
-Run the script:
+---
+
+## 🚀 How to Run
+
+Launch the interactive RRT simulation:
+```bash
 python Path-Planner_Code.py
+```
 
-**Controls**
-Key / Action	Function
-Left Mouse Drag	Draw obstacles
-o	Toggle obstacle drawing mode
-1 / 2 / 3	Select agent
-s + click	Set start point
-g + click	Set goal point
-SPACE	Start / pause simulation
-r	Replan paths
-p	Smooth paths
-c	Clear obstacles
-ENTER	Finalize polygon
-ESC / q	Quit
+---
 
-**How It Works**
-Uses RRT (Rapidly-exploring Random Trees) to generate paths from start to goal
-Detects collisions with obstacles using geometric checks
-Applies local repair or full replanning when paths become invalid
-Smooths paths using spline interpolation for better motion
-Agents follow paths with simple collision avoidance
+## 🎮 Interactive Simulation Controls
 
-**Use Cases**
-Robotics path planning simulation
-Understanding sampling-based algorithms (RRT)
-Multi-agent coordination experiments
-Visualization of motion planning techniques
+Use the following controls to interact with the simulation window:
 
-**Limitations**
-Agents are treated as point robots (no physical size)
-No advanced dynamics or constraints
-Collision avoidance is basic and heuristic-based
+| Action | Control / Keyboard Shortcut |
+| :--- | :--- |
+| **Draw Obstacle** | Left Click + Drag mouse (release to commit) |
+| **Finalize Polygon** | `ENTER` (while drawing) |
+| **Toggle Draw Mode** | `o` (Toggles between painting obstacles and placing start/goals) |
+| **Select Agent** | `1`, `2`, or `3` keys (or `TAB` to cycle) |
+| **Place Start Node** | Press `s`, then click anywhere on screen |
+| **Place Goal Node** | Press `g`, then click anywhere on screen |
+| **Start / Pause** | `SPACEBAR` (Runs all planners and begins path animation) |
+| **Force Replan** | `r` (Clears trees and recalculates paths for active agents) |
+| **Smooth Paths** | `p` (Triggers Catmull-Rom spline smoothing) |
+| **Clear Obstacles** | `c` (Wipes all custom obstacles and resets paths) |
+| **Quit Simulation** | `q` or `ESC` |
 
+---
 
-**Author**
-GAYATRI PRANEETA SAMAYAMANTRI
+## 🧠 Underlying Algorithms
+
+### Rapidly-exploring Random Tree (RRT)
+RRT is a randomized search algorithm designed to efficiently search high-dimensional spaces by randomly building a space-filling tree. In this simulator:
+1. The tree is biased towards the goal point using a customizable sample rate (default 5%).
+2. Points are generated randomly, steer steps are calculated, and collision checks are performed against all polygon obstacles before node insertion.
+
+### Catmull-Rom Spline Interpolation
+Linear paths constructed by RRT have sharp corners that are unrealistic for real physical systems. We use a Catmull-Rom spline chain to interpolate the path. The spline guarantees first-derivative ($C^1$) continuity, yielding smooth transitions at waypoints while ensuring the trajectory passes exactly through all waypoints.
